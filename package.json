@@ -1,0 +1,7 @@
+{
+  "name": "fxnet-auth-nodejs",
+  "version": "0.0.1",
+  "description": "Oauth and OpenId provider",
+  "author": "Peter Schrammel",
+  "private": true
+}

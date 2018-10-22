@@ -1,0 +1,10 @@
+{
+  "project": "fxnet-auth-nodejs",
+    
+  "git": "github.com/fixingthenet/fxnet-auth-nodejs",
+  "path": "fxnet-auth-nodejs",
+  "docker": {
+    "repo": "fxnet",
+    "name": "fxnet-auth-nodejs"
+  }
+}

@@ -1,0 +1,6 @@
+global_node_modules/
+node_modules/
+config.json
+
+*~
+.idea
