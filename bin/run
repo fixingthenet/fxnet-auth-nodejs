@@ -1,0 +1,3 @@
+#!/bin/bash
+export PATH=/code/global_node_modules/bin:$PATH
+exec nodemon src/main.js --exec babel-node --presets es2015,stage-2
