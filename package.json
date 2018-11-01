@@ -5,6 +5,7 @@
   "author": "Peter Schrammel",
   "private": true,
   "dependencies": {
+    "bcrypt": "^3.0.2",
     "express": "^4.16.4",
     "morgan": "^1.9.1",
     "pg": "^7.5.0",
