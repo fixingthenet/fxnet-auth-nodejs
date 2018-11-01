@@ -26,8 +26,8 @@ module.exports = (sequelize, DataTypes) => {
     User.prototype.generateHash=((password) => {
         return bcrypt.hashSync(password, bcrypt.genSaltSync(8));
     });
-    User.prototype.validPassword=((password) => {
+    User.prototype.validPassword=function(password) {
         return bcrypt.compareSync(password, this.password);
-    });
+    };
     return User;
 };
