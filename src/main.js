@@ -3,6 +3,7 @@ var app = express()
 const logger = require('morgan');
 const db = require('./models');
 var bodyParser = require('body-parser')
+var cors = require('cors')
 
 import account_get from './api/account_get'
 import session_login from './api/session_login'
@@ -15,6 +16,7 @@ db.sequelize.authenticate().then(() => {
              logger: console,
              models: db}
     app.use(logger('dev'));
+    app.use(cors());
     app.use(bodyParser.json());
 
     app.get('/api/users/:id', function (req, res) {
