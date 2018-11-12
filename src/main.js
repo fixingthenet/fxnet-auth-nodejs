@@ -16,14 +16,13 @@ function start() {
     }
     // Start the GraphQL server
     app.use(logger('dev'));
+    app.use(bodyParser.json());
+    app.use(cors());
     server.applyMiddleware({ app });
     app.listen(options,() => {
         console.log(`Server is running on localhost`);
     })
 }
 
-
-app.use(bodyParser.json());
-//app.use(cors());
 start();
 console.log(server)

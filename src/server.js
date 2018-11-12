@@ -2,6 +2,7 @@ import { createContext, EXPECTED_OPTIONS_KEY } from 'dataloader-sequelize';
 import { resolver } from 'graphql-sequelize';
 import models from './models';
 const {ApolloServer, gql } = require('apollo-server-express');
+import sessionLogin from './api/session_login.js'
 
 const typeDefs = gql`
   type Query {
@@ -11,7 +12,7 @@ const typeDefs = gql`
 
   type Mutation {
     signup(login: String!, password: String!): AuthPayload
-    login(login: String!, password: String!): AuthPayload
+    sessionLogin(login: String!, password: String!): AuthPayload
   }
 
  type User {
@@ -20,10 +21,18 @@ const typeDefs = gql`
   }
 
   type AuthPayload {
-    token: String!
-    user: User
+    token: String
+    errors: InputError
   }
 
+  type InputError {
+    base: String
+    fields: [FieldError]
+  }
+  type FieldError {
+    key: String!
+    errors: [String!]
+  }
 `;
 
 const resolvers = {
@@ -31,6 +40,12 @@ const resolvers = {
         user: resolver(models.User),
         users: resolver(models.User)
     },
+    Mutation: {
+        sessionLogin(_root, {login, password}, _ctx) {
+            console.log("sessionLogin:", login, password)
+            return sessionLogin(_root, _ctx, login, password)
+        }
+    }
 };
 
 resolver.contextToOptions = { [EXPECTED_OPTIONS_KEY]: EXPECTED_OPTIONS_KEY };
@@ -42,7 +57,8 @@ const server = new ApolloServer({
     playground: true,
     debug: true,
     tracing: true,
-  // context(req) {
+    context(req) {
+        return { models: models}
   //   // For each request, create a DataLoader context for Sequelize to use
   //   const dataloaderContext = createContext(models.sequelize);
 
@@ -51,7 +67,7 @@ const server = new ApolloServer({
   //   return {
   //     [EXPECTED_OPTIONS_KEY]: dataloaderContext,
   //   };
-  // },
+   },
 });
 
 export default server;
