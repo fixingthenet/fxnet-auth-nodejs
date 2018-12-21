@@ -8,7 +8,7 @@ const app = express();
 import server from './server';
 import models from './models';
 
-function start() {
+async function start() {
     // Make sure the database tables are up to date
     //    await models.sequelize.authenticate();
     var options = {
@@ -22,6 +22,7 @@ function start() {
     app.listen(options,() => {
         console.log(`Server is running on localhost`);
     })
+    await models.User.setup();
 }
 
 start();

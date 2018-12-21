@@ -3,6 +3,8 @@ import { resolver } from 'graphql-sequelize';
 import models from './models';
 const {ApolloServer, gql } = require('apollo-server-express');
 import sessionLogin from './api/session_login.js'
+import changePassword from './api/changePassword.js'
+import tokenHandler from './lib/tokenHandler'
 
 const typeDefs = gql`
   type Query {
@@ -13,11 +15,22 @@ const typeDefs = gql`
   type Mutation {
     signup(login: String!, password: String!): AuthPayload
     sessionLogin(login: String!, password: String!): AuthPayload
+    changePassword(
+           login: String!,
+           currentPassword: String!,
+           newPassword: String!,
+           newPasswordConfirmation: String!
+          ): Success
   }
 
- type User {
+  type User {
     id: ID!
     login: String
+  }
+
+  type Success {
+    success: Boolean,
+    errors: InputError
   }
 
   type AuthPayload {
@@ -30,7 +43,7 @@ const typeDefs = gql`
     fields: [FieldError]
   }
   type FieldError {
-    key: String!
+    name: String!
     errors: [String!]
   }
 `;
@@ -44,11 +57,20 @@ const resolvers = {
         sessionLogin(_root, {login, password}, _ctx) {
             console.log("sessionLogin:", login, password)
             return sessionLogin(_root, _ctx, login, password)
-        }
+        },
+        changePassword(_root, {login, currentPassword, newPassword, newPasswordConfirmation}, _ctx) {
+            return changePassword(_root, _ctx,
+                                  login,
+                                  currentPassword,
+                                  newPassword,
+                                  newPasswordConfirmation
+                                 )
+        },
     }
 };
 
 resolver.contextToOptions = { [EXPECTED_OPTIONS_KEY]: EXPECTED_OPTIONS_KEY };
+
 
 const server = new ApolloServer({
     typeDefs,
@@ -57,8 +79,20 @@ const server = new ApolloServer({
     playground: true,
     debug: true,
     tracing: true,
-    context(req) {
-        return { models: models}
+    context: async ({req}) => {
+        var userId;
+        try {
+            var token = req.headers['access-token']
+            var decoded = tokenHandler.verify(token)
+            userId=decoded.user.id
+        } catch (e) {
+            userId=5 //
+        }
+        var user = await models.User.findByPk(userId)
+        console.log("secCtx", user.id, token)
+        return { models: models,
+                 secCtx: { user: user }
+               }
   //   // For each request, create a DataLoader context for Sequelize to use
   //   const dataloaderContext = createContext(models.sequelize);
 

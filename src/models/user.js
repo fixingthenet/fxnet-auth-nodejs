@@ -27,7 +27,20 @@ module.exports = (sequelize, DataTypes) => {
         return bcrypt.hashSync(password, bcrypt.genSaltSync(8));
     });
     User.prototype.validPassword=function(password) {
+        //console.log("VALIDATIN PASSWORD",password,this.password)
         return bcrypt.compareSync(password, this.password);
     };
+    User.prototype.isAdmin=function() {
+        return this.login=='admin';
+    };
+    User.prototype.isGuest=function() {
+        return this.login=='guest';
+    };
+    User.setup= async function() {
+        var admin=await User.findOne({where: {login: 'admin'}})
+        User.admin=admin
+        var guest=await User.findOne({where: {login: 'guest'}})
+        User.guest=guest
+    }
     return User;
 };
