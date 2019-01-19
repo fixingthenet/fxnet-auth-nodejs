@@ -20,6 +20,10 @@ async function start(listen) {
     app.use(cors());
     server.applyMiddleware({ app });
     await models.User.setup();
+//    app.get('/api/', function (req, res) {
+//        res.send('GET request to homepage');
+//    });
+
     if (listen) {
         app.listen(options,() => {
             console.log(`Server is running on localhost`);

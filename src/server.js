@@ -3,6 +3,7 @@ import { resolver } from 'graphql-sequelize';
 import models from './models';
 const {ApolloServer, gql } = require('apollo-server-express');
 import sessionLogin from './api/session_login.js'
+import signup from './api/signup.js'
 import changePassword from './api/changePassword.js'
 import tokenHandler from './lib/tokenHandler'
 
@@ -13,7 +14,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    signup(login: String!, password: String!): AuthPayload
+    signup(login: String!, password: String!): Success
     sessionLogin(login: String!, password: String!): AuthPayload
     changePassword(
            login: String!,
@@ -55,8 +56,12 @@ const resolvers = {
     },
     Mutation: {
         sessionLogin(_root, {login, password}, _ctx) {
-            console.log("sessionLogin:", login, password)
+            console.log("sessionLogin:", login)
             return sessionLogin(_root, _ctx, login, password)
+        },
+        signup(_root, {login, password}, _ctx) {
+            console.log("signup:", login)
+            return signup(_root, _ctx, login, password)
         },
         changePassword(_root, {login, currentPassword, newPassword, newPasswordConfirmation}, _ctx) {
             return changePassword(_root, _ctx,
