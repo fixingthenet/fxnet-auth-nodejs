@@ -86,14 +86,16 @@ const server = new ApolloServer({
     tracing: true,
     context: async ({req}) => {
         var userId;
+        var user;
         try {
             var token = req.headers['access-token']
             var decoded = tokenHandler.verify(token)
             userId=decoded.user.id
+            user = await models.User.findByPk(userId)
         } catch (e) {
-            userId=5 //
+            user=models.User.guest
+            userId=models.User.guest.id //
         }
-        var user = await models.User.findByPk(userId)
         console.log("secCtx", user.id, token)
         return { models: models,
                  secCtx: { user: user }
