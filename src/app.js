@@ -23,7 +23,10 @@ async function start(listen) {
 //    app.get('/api/', function (req, res) {
 //        res.send('GET request to homepage');
 //    });
-
+    app.get('/', (req,res) => {
+       res.send(JSON.stringify({ "success": true}))
+    })
+    
     if (listen) {
         app.listen(options,() => {
             console.log(`Server is running on localhost`);
