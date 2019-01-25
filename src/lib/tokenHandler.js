@@ -5,7 +5,7 @@ import fs from 'fs'
 const cert= fs.readFileSync('config/secrets/cert.pem');
 const key= fs.readFileSync('config/secrets/key.pem');
 const exp='7d';
-const issuer='https://dev-auth2.fixingthe.net/';
+const issuer=process.env.ISSUER_URL
 
 
 

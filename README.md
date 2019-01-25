@@ -5,6 +5,7 @@
  * DB_HOST
  * DB_DATABASE
  * SIGNUPS_FORBIDDEN
+ * ISSUER_URL url of the backend?
 
 Create certs:
     cd config/secrets
